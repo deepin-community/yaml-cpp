@@ -1,0 +1,33 @@
+Author: Simon Quigley <tsimonq2@debian.org>
+Description: Use the googletest provided by the archive instead of the embedded copy
+Forwarded: https://github.com/jbeder/yaml-cpp/pull/1035
+Last-Update: 2021-09-24
+
+diff --git a/test/CMakeLists.txt b/test/CMakeLists.txt
+index 5ebc1a6b3..34be1fefe 100644
+--- a/test/CMakeLists.txt
++++ b/test/CMakeLists.txt
+@@ -4,11 +4,18 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+ set(BUILD_MOCK ON CACHE BOOL "" FORCE)
+ set(CMAKE_POLICY_DEFAULT_CMP0048 NEW)
+ 
+-add_subdirectory(
+-  "${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.10.0"
+-  "${CMAKE_CURRENT_BINARY_DIR}/prefix")
+-
+-include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.10.0/googletest/include")
++find_package(GTest)
++if (NOT GTEST_FOUND)
++    add_subdirectory(
++      "${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.10.0"
++      "${CMAKE_CURRENT_BINARY_DIR}/prefix")
++    include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.10.0/googletest/include")
++else()
++    add_subdirectory(
++      "/usr/src/googletest"
++      "${CMAKE_CURRENT_BINARY_DIR}/prefix")
++    include_directories(SYSTEM "/usr/src/googletest/googlemock/include")
++endif()
+ 
+ set(test-new-api-pattern "new-api/*.cpp")
+ set(test-source-pattern "*.cpp" "integration/*.cpp" "node/*.cpp")

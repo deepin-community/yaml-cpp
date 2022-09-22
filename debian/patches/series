@@ -1,0 +1,5 @@
+symbol-visibility.patch
+fix-pkg-config.patch
+export-m_amount.patch
+use-archive-googletest.patch
+cmake_set_libraries.patch

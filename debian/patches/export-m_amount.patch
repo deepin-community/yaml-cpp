@@ -1,0 +1,30 @@
+From 13e2e4092c886409a9006f0321a1431b9c6a33d3 Mon Sep 17 00:00:00 2001
+From: Pino Toscano <toscano.pino@tiscali.it>
+Date: Sun, 18 Apr 2021 10:29:59 +0200
+Subject: [PATCH] Export YAML::detail::node::m_amount
+
+The internal header node/detail/node.h is included by public headers;
+YAML::detail::node is implemented in the header itself, and thus it gets
+inlined... except for its static m_amount class member, which is
+instantiated in the library only. Right now all the symbols of yaml-cpp
+are exported (nothing is hidden), so the linker will find node::m_amount
+in the yaml-cpp library.
+
+As solution/workaround, explicitly export YAML::detail::node::m_amount.
+---
+ src/node_data.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/node_data.cpp b/src/node_data.cpp
+index da2aefce9..8f5422ae6 100644
+--- a/src/node_data.cpp
++++ b/src/node_data.cpp
+@@ -13,7 +13,7 @@
+ 
+ namespace YAML {
+ namespace detail {
+-std::atomic<size_t> node::m_amount{0};
++YAML_CPP_API std::atomic<size_t> node::m_amount{0};
+ 
+ const std::string& node_data::empty_scalar() {
+   static const std::string svalue;

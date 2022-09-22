@@ -1,0 +1,4 @@
+version=4
+
+opts=dversionmangle=s/\+(debian|dfsg|ds|deb)(\.?\d+)?$//,repacksuffix=+dfsg \
+    https://github.com/jbeder/yaml-cpp/releases .*/[relasymcp.-]*(\d\S*)\.tar\.gz
